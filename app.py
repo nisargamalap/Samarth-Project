@@ -441,26 +441,139 @@ async def qa_json(req: Request):
 @app.get("/", response_class=HTMLResponse)
 def home():
     return """
-    <html>
-      <head>
-        <title>🌿 Project Samarth Q&A</title>
-      </head>
-      <body style="font-family: Arial; margin: 40px;">
-        <h2>🌿 Project Samarth – Data Q&A</h2>
-        <form action="/qa_html" method="post">
-          <input name="question" style="width:400px; padding:5px;" placeholder="Ask about rainfall or crops..." />
-          <button type="submit" style="padding:5px;">Ask</button>
-        </form>
-        <br>
-        <b>Examples:</b>
-        <ul>
-          <li>rainfall in Chennai</li>
-          <li>compare rainfall and top crops in Maharashtra and Gujarat for the last 5 years</li>
-        </ul>
-      </body>
-    </html>
-    """
+    <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🌿 Project Samarth – Data Q&A</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+      }
 
+      .container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        max-width: 600px;
+        width: 100%;
+        text-align: center;
+      }
+
+      h2 {
+        color: #2e7d32;
+        font-weight: 600;
+        font-size: 28px;
+        margin-bottom: 24px;
+      }
+
+      form {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      input[name="question"] {
+        flex: 1;
+        padding: 12px 14px;
+        font-size: 16px;
+        border: 2px solid #c8e6c9;
+        border-radius: 10px;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      input[name="question"]:focus {
+        border-color: #4caf50;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+      }
+
+      button {
+        background: linear-gradient(135deg, #66bb6a, #43a047);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 28px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(76, 175, 80, 0.4);
+      }
+
+      ul {
+        text-align: left;
+        display: inline-block;
+        margin-top: 16px;
+        line-height: 1.6;
+      }
+
+      li {
+        margin-bottom: 6px;
+      }
+
+      .note {
+        margin-top: 16px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 28px 24px;
+        }
+
+        form {
+          flex-direction: column;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>🌿 Project Samarth – Data Q&A</h2>
+      <form action="/qa_html" method="post">
+        <input
+          type="text"
+          name="question"
+          placeholder="Ask about rainfall or crops..."
+          required
+        />
+        <button type="submit">Ask</button>
+      </form>
+
+      <b>Examples:</b>
+      <ul>
+        <li>rainfall in Chennai</li>
+        <li>crops in Uttar Pradesh</li>
+        <li>compare rainfall and top crops in Maharashtra and Gujarat for the last 5 years</li>
+      </ul>
+
+      <div class="note">Powered by Open Data • data.gov.in API</div>
+    </div>
+  </body>
+</html>
+
+    """
 
 @app.post("/qa_html", response_class=HTMLResponse)
 def qa_html(question: str = Form(...)):
@@ -470,19 +583,145 @@ def qa_html(question: str = Form(...)):
         answer = f"⚠️ Error: {e}"
 
     return f"""
-    <html>
-      <head><title>🌿 Project Samarth – Data Q&A</title></head>
-      <body style="font-family: Arial; margin: 40px;">
-        <h2>🌿 Project Samarth – Data Q&A</h2>
-        <form action="/qa_html" method="post">
-          <input name="question" value="{question}" style="width:400px; padding:5px;" />
-          <button type="submit" style="padding:5px;">Ask</button>
-        </form>
-        <hr>
-        <b>Answer:</b>
-        <pre style="white-space: pre-wrap;">{answer}</pre>
-        <br><a href="/">← Ask another question</a>
-      </body>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>🌿 Project Samarth – Data Q&A</title>
+        <style>
+            body {{
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+                background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                padding: 20px;
+            }}
+
+            .container {{
+                background: white;
+                border-radius: 16px;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+                padding: 40px;
+                max-width: 700px;
+                width: 100%;
+            }}
+
+            h2 {{
+                color: #2e7d32;
+                font-weight: 600;
+                font-size: 28px;
+                margin-bottom: 24px;
+                text-align: center;
+            }}
+
+            form {{
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                margin-bottom: 20px;
+            }}
+
+            input[name="question"] {{
+                flex: 1;
+                padding: 12px 14px;
+                font-size: 16px;
+                border: 2px solid #c8e6c9;
+                border-radius: 10px;
+                outline: none;
+                transition: 0.3s;
+            }}
+
+            input[name="question"]:focus {{
+                border-color: #4caf50;
+                box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+            }}
+
+            button {{
+                background: linear-gradient(135deg, #66bb6a, #43a047);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                padding: 12px 28px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+            }}
+
+            button:hover {{
+                transform: translateY(-2px);
+                box-shadow: 0 6px 18px rgba(76, 175, 80, 0.4);
+            }}
+
+            .answer-section {{
+                margin-top: 30px;
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 12px;
+                border-left: 5px solid #4caf50;
+            }}
+
+            .answer-label {{
+                color: #4caf50;
+                font-weight: 600;
+                margin-bottom: 8px;
+                font-size: 14px;
+                text-transform: uppercase;
+            }}
+
+            .answer-content {{
+                white-space: pre-wrap;
+                color: #333;
+                font-size: 15px;
+                line-height: 1.6;
+            }}
+
+            a {{
+                display: inline-block;
+                margin-top: 20px;
+                color: #2e7d32;
+                text-decoration: none;
+                font-weight: 500;
+            }}
+
+            a:hover {{
+                text-decoration: underline;
+            }}
+
+            @media (max-width: 600px) {{
+                .container {{
+                    padding: 28px 24px;
+                }}
+                form {{
+                    flex-direction: column;
+                }}
+                button {{
+                    width: 100%;
+                }}
+            }}
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h2>🌿 Project Samarth – Data Q&A</h2>
+            <form action="/qa_html" method="post">
+                <input type="text" name="question" value="{question}" placeholder="Ask about rainfall or crops..." required />
+                <button type="submit">Ask</button>
+            </form>
+
+            <div class="answer-section">
+                <div class="answer-label">Answer</div>
+                <div class="answer-content">{answer}</div>
+            </div>
+
+            <a href="/">← Ask another question</a>
+        </div>
+    </body>
     </html>
     """
 
