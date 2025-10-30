@@ -358,7 +358,7 @@ def get_answer_from_question(question: str):
             f"🌧️ Average rainfall in {region.title()} ({latest_year}): "
             f"{avg_rain:.2f} mm ([Source](https://data.gov.in/resource/{RAIN_RESOURCE}))"
         )
-
+    
     # --- Case 2: Compare rainfall and crops ---
     if "rainfall" in q and "crop" in q:
         m = re.findall(r"in (.+?) and (.+?) for the last (\d+) years", q)
@@ -413,6 +413,38 @@ def get_answer_from_question(question: str):
             f"• {state1.title()}: {', '.join(result[state1]['top_crops'])}\n"
             f"• {state2.title()}: {', '.join(result[state2]['top_crops'])}"
         )
+
+        # --- Case 3: "Crops in <state>" ---
+    if q.startswith("crops in "):
+        state = q.replace("crops in ", "").strip()
+        df = get_datagov_data(CROP_RESOURCE, limit=1000)
+        if df.empty:
+            return "⚠️ No crop data available right now."
+
+        # normalize columns
+        df.columns = [c.lower() for c in df.columns]
+        if "state_name" not in df.columns or "crop" not in df.columns:
+            return f"⚠️ Unexpected crop dataset format. Columns: {list(df.columns)}"
+
+        # filter by state
+        df_match = df[df["state_name"].str.contains(state, case=False, na=False)]
+        if df_match.empty:
+            return f"❌ No crop data found for {state.title()}."
+
+        # aggregate and rank
+        if "production_" in df_match.columns:
+            df_match["production_"] = pd.to_numeric(df_match["production_"], errors="coerce")
+            top_crops = (
+                df_match.groupby("crop")["production_"]
+                .sum()
+                .sort_values(ascending=False)
+                .head(5)
+            )
+            crops_list = ", ".join(top_crops.index)
+            return f"🌾 Top crops grown in {state.title()}: {crops_list}"
+        else:
+            crops_list = ", ".join(df_match["crop"].unique()[:10])
+            return f"🌾 Crops grown in {state.title()}: {crops_list}"
 
     # --- Default response ---
     return (
